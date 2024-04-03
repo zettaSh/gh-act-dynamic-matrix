@@ -11,6 +11,7 @@ jobs:
       - name: Generate services
         id: gen-svcs
         run: |
+          sleep 10s
           echo -n 'svcs=[' >> $GITHUB_OUTPUT
           echo -n \"svc1_`cat /dev/urandom | head -n1 | md5sum | head -c3`\", >> $GITHUB_OUTPUT
           echo -n \"svc2_`cat /dev/urandom | head -n1 | md5sum | head -c3`\", >> $GITHUB_OUTPUT
