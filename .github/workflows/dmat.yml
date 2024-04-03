@@ -1,0 +1,29 @@
+name: Test Dynamic Matrix
+
+on: push
+
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    outputs:
+      services: ${{ steps.gen-svcs.outputs.svcs }}
+    steps:
+      - name: Generate services
+        id: gen-svcs
+        run: |
+          echo -n 'svcs=[' >> $GITHUB_OUTPUT
+          echo -n \"svc1_`cat /dev/urandom | head -n1 | md5sum | head -c3`\", >> $GITHUB_OUTPUT
+          echo -n \"svc2_`cat /dev/urandom | head -n1 | md5sum | head -c3`\", >> $GITHUB_OUTPUT
+          echo -n \"svc3_`cat /dev/urandom | head -n1 | md5sum | head -c3`\" >> $GITHUB_OUTPUT
+          echo -n ']' >> $GITHUB_OUTPUT
+
+  dosth:
+    runs-on: ubuntu-latest
+    needs: [prepare]
+    strategy:
+      matrix:
+        services: ${{ fromJSON(needs.prepare.outputs.services) }}
+    name: dosth_svc(${{ matrix.services }})
+    steps:
+      - run: echo needs.prepare.outputs.services ${{ needs.prepare.outputs.services }}
+      - run: echo matrix.services ${{ matrix.services }}
