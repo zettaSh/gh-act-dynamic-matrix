@@ -21,11 +21,11 @@ jobs:
   dosth:
     runs-on: ubuntu-latest
     needs: [prepare]
-    outputs:
-      desc_str_of_${{ matrix.services }}: ${{ steps.output_step.outputs.desc_str }}
     strategy:
       matrix:
         services: ${{ fromJSON(needs.prepare.outputs.services) }}
+    outputs:
+      desc_str_of_${{ matrix.services }}: ${{ steps.output_step.outputs.desc_str }}
     name: dosth_svc(${{ matrix.services }})
     steps:
       - run: echo needs.prepare.outputs.services ${{ needs.prepare.outputs.services }}
