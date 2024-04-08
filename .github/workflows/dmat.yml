@@ -21,6 +21,8 @@ jobs:
   dosth:
     runs-on: ubuntu-latest
     needs: [prepare]
+    outputs:
+      desc_str: ${{ steps.output_step.outputs.desc_str }}
     strategy:
       matrix:
         services: ${{ fromJSON(needs.prepare.outputs.services) }}
@@ -28,3 +30,11 @@ jobs:
     steps:
       - run: echo needs.prepare.outputs.services ${{ needs.prepare.outputs.services }}
       - run: echo matrix.services ${{ matrix.services }}
+      - id: output_step
+        run: echo "desc_str=desc_from_${{ matrix.services }}" >> "$GITHUB_OUTPUT"
+
+  summary:
+    runs-on: ubuntu-latest
+    needs: [dosth]
+    steps:
+      - run: echo desc_str is ${{ needs.dosth.outputs.desc_str }}
